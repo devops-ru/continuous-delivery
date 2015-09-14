@@ -1,0 +1,12 @@
+user: root
+http_port: 80
+max_clients: 200
+system_packages:
+  - nginx
+  - git
+  - curl
+  - nodejs
+project_repo: https://github.com/devops-ru/continuous-delivery
+project_dir: /var/www
+project_root: "{{ project_dir }}/site"
+branch: master
