@@ -23,3 +23,9 @@ ansible all -i ops/hosts -m ping -vvvv
 ansible all -i ops/hosts -a 'uname -a'
 ```
 
+
+## Flyway
+
+```
+flyway -configFile=`pwd`/conf/flyway.conf -locations=filesystem:`pwd`/sql migrate
+```
