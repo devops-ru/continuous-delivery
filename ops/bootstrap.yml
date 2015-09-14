@@ -1,0 +1,40 @@
+---
+- hosts: app
+  remote_user: root
+  vars:
+    user: root
+    http_port: 80
+    max_clients: 200
+    system_packages:
+      - nginx
+      - git
+      - curl
+    project_repo: https://github.com/niquola/hellodevops.git
+    project_dir: /var/www
+    project_root: "{{ project_dir }}/site"
+    branch: master
+  tasks:
+  - name: Install required system packages.
+    apt: pkg={{ item }} state=installed update-cache=yes
+    with_items: "{{ system_packages }}"
+
+  - name: prepare dir
+    file: path={{ project_dir }} mode=0777 state=directory
+
+  - name: pull app
+    git: repo={{ project_repo }} dest={{ project_root }} version={{ branch }}
+
+  - name: create upstart service
+    template: src=templates/service.upstart.j2 dest=/etc/init/myservice.conf group=root owner=root
+
+  - name: create upstart service
+    template: src=templates/service.upstart.j2 dest=/etc/init/myservice.conf group=root owner=root
+    notify:
+      - restart service
+
+  - name: test deploy
+    shell: curl localhost:8888
+
+  handlers:
+    - name: restart service
+      service: name=myservice state=restarted
